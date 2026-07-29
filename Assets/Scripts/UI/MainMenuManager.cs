@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuManager : MonoBehaviour
@@ -9,6 +10,7 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject donateMenu;
 
     [Header("--------- MainButton ---------")]
+    [SerializeField] private Button startBtn;
     [SerializeField] private Button optionsBtn;
     [SerializeField] private Button donateBtn;
     [SerializeField] private Button quitBtn;
@@ -27,6 +29,10 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
+        startBtn.onClick.AddListener(() =>
+        {
+             SceneManager.LoadScene("StartMenu");
+        });
         quitBtn.onClick.AddListener(() =>
         {
            #if UNITY_EDITOR

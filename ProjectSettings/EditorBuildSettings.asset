@@ -8,9 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 0
-    path: Assets/Scenes/ChooseAvatar.unity
-    guid: 6c0282838f311480882f6aa0a1244a06
+  - enabled: 1
+    path: Assets/Scenes/StartMenu.unity
+    guid: 72e6dad40ec514ebaae131bb728e5ce8
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 0fc01dab664c44989ab4d82d06465277,
       type: 2}

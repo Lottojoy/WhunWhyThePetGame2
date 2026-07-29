@@ -6,9 +6,12 @@ public class MainMenuManager : MonoBehaviour
     [Header("--------- MenuCanvas ---------")]
     [SerializeField] private GameObject generalSettingMenu;
     [SerializeField] private GameObject controlsMenu;
+    [SerializeField] private GameObject donateMenu;
 
     [Header("--------- MainButton ---------")]
     [SerializeField] private Button optionsBtn;
+    [SerializeField] private Button donateBtn;
+    [SerializeField] private Button quitBtn;
 
     [Header("--------- ChangePageButton ---------")]
     [SerializeField] private Button settingMenuBtn;
@@ -24,9 +27,22 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
+        quitBtn.onClick.AddListener(() =>
+        {
+           #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit();
+        #endif 
+        });
         optionsBtn.onClick.AddListener(() =>
         {
             currentMenu = generalSettingMenu;
+            currentMenu.SetActive(true);
+        });
+        donateBtn.onClick.AddListener(() =>
+        {
+            currentMenu = donateMenu;
             currentMenu.SetActive(true);
         });
         settingMenuBtn.onClick.AddListener(() =>
@@ -47,15 +63,6 @@ public class MainMenuManager : MonoBehaviour
             currentMenu = controlsMenu;
             currentMenu.SetActive(true);
         });
-    }
-
-    public void QuitGame()
-    {
-        #if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPlaying = false;
-        #else
-                Application.Quit();
-        #endif
     }
 
     // Update is called once per frame

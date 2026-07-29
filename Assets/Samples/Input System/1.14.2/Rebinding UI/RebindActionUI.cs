@@ -203,6 +203,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
 
             // Set on label (if any).
             if (m_BindingText != null)
+                m_BindingText.fontSize = 14;
                 m_BindingText.text = displayString;
 
             // Give listeners a chance to configure UI in response.
@@ -330,6 +331,7 @@ namespace UnityEngine.InputSystem.Samples.RebindUI
             //========================================================================
             // if (m_RebindOverlay == null && m_RebindText == null && m_RebindStartEvent == null && m_BindingText != null)
             //     m_BindingText.text = "<Waiting...>";
+            m_BindingText.fontSize = 9;
             m_BindingText.text = "[Waiting for Input]";
 
             // Give listeners a chance to act on the rebind starting.

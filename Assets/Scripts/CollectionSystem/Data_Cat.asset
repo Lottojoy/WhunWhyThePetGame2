@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd944d1a40d4bd46abc4088f6683c30, type: 3}
+  m_Name: Data_Cat
+  m_EditorClassIdentifier: 
+  animalID: 02
+  animalName: Pin Cat
+  description: The Devil Cat, the villain in KU.
+  colorSprite: {fileID: 21300000, guid: c29ae55d59c1ee249a057b9058719d4b, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: e0dd11212c3b4af44b2d7e95db021b89, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: db8ab8f38b5555e4381fe3629b316b06,
+    type: 3}
+  isUnlocked: 1

@@ -29,13 +29,19 @@ public class StarRatingUI : MonoBehaviour
 
     private void BuildStarSlots()
     {
-        // แก้ไข: นิวอาเรย์เป็น RawImage ให้ตรงกัน
         starSlots = new RawImage[maxStars];
         for (int i = 0; i < maxStars; i++)
         {
             RawImage icon = (i == 0) ? starIconPrefab : Instantiate(starIconPrefab, transform);
             icon.gameObject.SetActive(true);
             starSlots[i] = icon;
+
+            // เพิ่มส่วนนี้
+            CuteUIAnimator anim = icon.GetComponent<CuteUIAnimator>();
+            if (anim == null)
+                anim = icon.gameObject.AddComponent<CuteUIAnimator>();
+
+            anim.PopIn(i * 0.15f);
         }
     }
 

@@ -29,6 +29,9 @@ public class SummaryUIController : MonoBehaviour
     [Header("เรียง Leaderboard ตามคะแนนมาก -> น้อยหรือไม่")]
     public bool sortByScore = true;
 
+    [Header("ถ้าติ๊กไว้ กราฟจะวาดทันทีตอน Populate (ของเดิม) ถ้าไม่ติ๊ก ต้องให้ SummaryAnimator เรียก DrawGraphAnimated() เอง")]
+    public bool autoDrawGraphOnPopulate = false;
+
     private void Start()
     {
         Populate();
@@ -51,9 +54,9 @@ public class SummaryUIController : MonoBehaviour
         if (starRatingUI != null)
             starRatingUI.SetRating(data.starRating);
 
-        // กราฟ Trend
-        if (lineGraph != null)
-            lineGraph.Draw(data.earnTrend);
+        // กราฟ Trend — ถ้าไม่ auto ให้ SummaryAnimator เป็นคนสั่งวาดเองตอนจังหวะที่ต้องการแทน
+        if (autoDrawGraphOnPopulate)
+            DrawGraphAnimated();
 
         // Leaderboard
         var results = data.players;
@@ -76,5 +79,17 @@ public class SummaryUIController : MonoBehaviour
         // ผู้เล่นอันดับ 1 (Leader Player)
         if (leaderPlayerText != null && results.Count > 0)
             leaderPlayerText.text = results[0].playerName;
+    }
+
+    /// <summary>
+    /// วาดกราฟ Trend แบบ animate ทีละจุด เรียกจากภายนอกได้ (เช่นจาก SummaryAnimator
+    /// หลังจากกล่องกราฟ PopIn เด้งเข้ามาเสร็จแล้ว) เพื่อให้จังหวะ animation ตรงกัน
+    /// </summary>
+    public void DrawGraphAnimated()
+    {
+        var data = GameSummaryData.Instance;
+        if (data == null || lineGraph == null) return;
+
+        lineGraph.DrawAnimated(data.earnTrend);
     }
 }

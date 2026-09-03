@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CharacterSelectorManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class CharacterSelectorManager : MonoBehaviour
 
     public void OnClickBack()
     {
-        Debug.Log("Back");
+        GameManager.LoadScene("LobbyScene");
     }
 
     public void OnClickRight()

@@ -70,10 +70,4 @@ public class MainMenuManager : MonoBehaviour
             currentMenu.SetActive(true);
         });
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }

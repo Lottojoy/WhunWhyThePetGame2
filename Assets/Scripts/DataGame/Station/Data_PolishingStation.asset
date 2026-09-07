@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 788a3d5bb6584984890e9245adb12f2a, type: 3}
+  m_Name: Data_PolishingStation
+  m_EditorClassIdentifier: 
+  stationID: 5
+  stationType: 5
+  stationName: Polishing Station
+  unlockCondition: Start the game (Day 4) And haveDrying Station Lv. 2
+  description: 'Condition and gloss fur for a beautiful finish.
+
+'
+  requiresPlayerInteraction: 1
+  levelStats:
+  - level: 1
+    upgradeCost: 300
+    processTime: 20
+    satisfactionBonus: 4
+    serviceFee: 30
+  - level: 2
+    upgradeCost: 450
+    processTime: 17
+    satisfactionBonus: 8
+    serviceFee: 45
+  - level: 3
+    upgradeCost: 650
+    processTime: 14
+    satisfactionBonus: 12
+    serviceFee: 65
+  - level: 4
+    upgradeCost: 900
+    processTime: 12
+    satisfactionBonus: 16
+    serviceFee: 90

@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fd944d1a40d4bd46abc4088f6683c30, type: 3}
+  m_Name: Data_Turtle
+  m_EditorClassIdentifier: 
+  animalID: 4
+  animalName: Tutle
+  unlockCondition: Must have polishing station
+  description: 'It moves very slowly, but the wait in line is incredibly long. The
+    focus is on shell polishing.
+
+'
+  colorSprite: {fileID: 0}
+  silhouetteSprite: {fileID: 0}
+  modelPrefab: {fileID: 0}
+  isUnlocked: 0
+  patienceTimes:
+  - 120
+  - 100
+  - 80
+  rewardMoneys: 3c0000005a00000078000000
+  usableStations: 030000000400000005000000

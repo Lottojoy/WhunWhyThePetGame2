@@ -12,11 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fd944d1a40d4bd46abc4088f6683c30, type: 3}
   m_Name: Data_Cat
   m_EditorClassIdentifier: 
-  animalID: 02
-  animalName: Pin Cat
-  description: The Devil Cat, the villain in KU.
+  animalID: 1
+  animalName: Cat
+  unlockCondition: Start the game (Day 1)
+  description: 'Basic pet, slightly irritable, dislikes long waits.
+
+'
   colorSprite: {fileID: 21300000, guid: c29ae55d59c1ee249a057b9058719d4b, type: 3}
   silhouetteSprite: {fileID: 21300000, guid: e0dd11212c3b4af44b2d7e95db021b89, type: 3}
   modelPrefab: {fileID: 8931525217179229635, guid: db8ab8f38b5555e4381fe3629b316b06,
     type: 3}
   isUnlocked: 1
+  patienceTimes:
+  - 60
+  - 50
+  - 40
+  rewardMoneys: 1e0000002d0000003c000000
+  usableStations: 01000000020000000300000004000000

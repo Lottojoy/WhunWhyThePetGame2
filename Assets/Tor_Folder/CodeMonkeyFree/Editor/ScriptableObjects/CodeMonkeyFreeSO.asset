@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentVersion: 1.01
   subtype: kitchenchaos
-  lastShownTimestamp: 1788787404
+  lastShownTimestamp: 1788882555
   lastUpdateResponse:
     version: 1.01
     versionUrl: https://unitycodemonkey.com
-  checkedLastUpdateTimestamp: 1788787404
+  checkedLastUpdateTimestamp: 1788882555
   lastQOTDResponse:
     questionId: 340
     questionText: What is the orthographicSize in a 2D camera?
@@ -27,7 +27,7 @@ MonoBehaviour:
     answerC: Half the units visible horizontally
     answerD: Half the units visible vertically
     answerE: 
-  lastQotdTimestamp: 1788787404
+  lastQotdTimestamp: 1788882555
   lastDynamicHeaderResponse:
     topImageUrl: https://codemonkeyexternal.blob.core.windows.net/external/Misc/humbleSep26Maksym.png
     topText: AWESOME Characters and Weapons 98% OFF! (Modern, Medieval, Fantasy,
@@ -36,20 +36,20 @@ MonoBehaviour:
     bottomText: Escape Tutorial Hell and level up your skills, try my Practice Lab
       for FREE!
     bottomLink: practicelab
-  lastDynamicHeaderTimestamp: 1788787404
+  lastDynamicHeaderTimestamp: 1788882555
   websiteLatestMessage:
     text: <a href="https://cmonkey.co/freecourses">Check out all my FREE courses!
       Click here!</a>
-  websiteLatestMessageTimestamp: 1788787404
+  websiteLatestMessageTimestamp: 1788882555
   websiteLatestVideos:
     videos:
+    - youTubeId: xhOkkGbL3mY
+      title: How to Make your game look AWESOME! (Unity Lighting and Post Processing
+        Tutorial)
     - youTubeId: HOm1VQLKhX8
       title: Unity 6.6 is here and it has 3 MASSIVE IMPROVEMENTS!
     - youTubeId: 8xj9IEFRgKo
       title: THIS is how you go from BEGINNER to ADVANCED!
     - youTubeId: XJBrzk7PR4o
       title: DON'T sell your game for $100!
-    - youTubeId: 2QKVo8m5ozQ
-      title: The MYTH of the Overnight Game Success! ($10 mil DOESN'T happen like
-        that)
-  websiteLatestVideosTimestamp: 1788787404
+  websiteLatestVideosTimestamp: 1788882555

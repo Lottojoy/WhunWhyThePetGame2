@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,26 +32,10 @@ public class MultiplayerPanelManager : MonoBehaviour
     void Start()
     {
         // ========= HostPanel =========
-        hostBtn.onClick.AddListener(() =>
-        {
-            currentPanel.SetActive(false);
-            currentPanel = hostPanel;
-            currentPanel.SetActive(true);
-            codeLabel.text = "Code : X X X X X X";
-        });
-        hostCloseBtn.onClick.AddListener(() =>
-        {
-            currentPanel.SetActive(false);
-            currentPanel = selectTypePanel;
-            currentPanel.SetActive(true);
-        });
+        hostBtn.onClick.AddListener(onHostBtnClick);
+        hostCloseBtn.onClick.AddListener(onCloseBtnHostClick);
         // ========= JoinPanel =========
-        joinBtn.onClick.AddListener(() =>
-        {
-            currentPanel.SetActive(false);
-            currentPanel = joinPanel;
-            currentPanel.SetActive(true);
-        });
+        joinBtn.onClick.AddListener(onJoinBtnClick);
         clientCloseBtn.onClick.AddListener(() =>
         {
             currentPanel.SetActive(false);
@@ -58,9 +43,38 @@ public class MultiplayerPanelManager : MonoBehaviour
             currentPanel = selectTypePanel;
             currentPanel.SetActive(true);
         });
-        enterBtn.onClick.AddListener(() =>
-        {
-            Debug.Log("Entered Code : " + codeInput.text);
-        });
+        enterBtn.onClick.AddListener(onEnterBtn);
+    }
+
+    private async void onEnterBtn()
+    {
+        if (codeInput.text.Length != 6) return;
+        await ConnectRelay.Instance.JoinRelay(codeInput.text);
+        codeInput.text = "";
+    }
+
+    private async void onHostBtnClick()
+    {
+        string joinCode = await ConnectRelay.Instance.CreateRelay();
+        currentPanel.SetActive(false);
+        currentPanel = hostPanel;
+        string separated = string.Join(" ", joinCode.ToCharArray());
+        codeLabel.text = "code : " + separated;
+        currentPanel.SetActive(true);
+    }
+
+    private async void onCloseBtnHostClick()
+    {
+        currentPanel.SetActive(false);
+        currentPanel = selectTypePanel;
+        ConnectRelay.Instance.CloseRelay();
+        currentPanel.SetActive(true);
+    }
+
+    private async void onJoinBtnClick()
+    {
+        currentPanel.SetActive(false);
+        currentPanel = joinPanel;
+        currentPanel.SetActive(true);
     }
 }

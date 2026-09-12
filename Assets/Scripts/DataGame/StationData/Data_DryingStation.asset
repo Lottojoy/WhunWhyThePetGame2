@@ -16,9 +16,14 @@ MonoBehaviour:
   stationType: 2
   stationName: Drying Station
   unlockCondition: Start the game (Day 1)
+  isUnlocked: 1
   description: 'Blow-dry the fur after bathing.
 
 '
+  colorSprite: {fileID: 21300000, guid: 1453fc6ab6544aa40bd1f0dcf01a9c2a, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: 85e12ed335f82c04992cfe64bbfc8f6f, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: 4dbc5d0abb0b3084ba1963123158bfc6,
+    type: 3}
   requiresPlayerInteraction: 0
   levelStats:
   - level: 1

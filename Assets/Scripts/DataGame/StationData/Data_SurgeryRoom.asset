@@ -16,9 +16,14 @@ MonoBehaviour:
   stationType: 4
   stationName: Surgery Room
   unlockCondition: Start the game (Day 4)
+  isUnlocked: 0
   description: 'Treating animals that are critically ill or severely injured.
 
 '
+  colorSprite: {fileID: 21300000, guid: 250d1fe19a3667a4593d3d0cd7f76058, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: 16e7718687ef2ec4c88b39f0b1f640d6, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: 07d88f7faacf8364fb35c968641d377e,
+    type: 3}
   requiresPlayerInteraction: 1
   levelStats:
   - level: 1

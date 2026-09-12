@@ -1,37 +1,100 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-/// <summary>
-/// คุมหน้า UI Collection หลัก
-/// - Spawn ช่องสัตว์ทุกตัวเข้า Grid (ต้องตั้ง GridLayoutGroup ที่ gridContent เป็น
-///   Constraint = Fixed Column Count, Constraint Count = 2 เพื่อให้ได้แถวละ 2 ตามสเปก)
-/// - gridContent ต้องเป็น Content ของ ScrollRect ที่มี Scrollbar แนวตั้งต่ออยู่แล้ว
-/// - ปุ่ม Back ของ UI นี้ ให้เรียก CloseCollection()
-/// </summary>
 public class CollectionManager : MonoBehaviour
 {
-    [Header("ข้อมูลสัตว์ทั้งหมด (All Animal Data)")]
+    [Header("=== Panels ===")]
+    [SerializeField] private GameObject collectionRootPanel; // หน้าต่าง UI Collection ทั้งหมด (สำหรับปุ่มปิด)
+    [SerializeField] private GameObject petPanel;            // ScrollView หรือ Panel ของสัตว์
+    [SerializeField] private GameObject stationPanel;        // ScrollView หรือ Panel ของ Station
+
+    [Header("=== Category Buttons ===")]
+    [SerializeField] private Button petTabBtn;               // ปุ่มสลับมาดูสัตว์
+    [SerializeField] private Button stationTabBtn;           // ปุ่มสลับมาดู Station
+    [SerializeField] private Button backBtn;                 // ปุ่มปิด/ย้อนกลับ
+
+    [Header("=== Grid Content Setup ===")]
+    [SerializeField] private Transform petGridContent;       // Content ใน ScrollView สัตว์
+    [SerializeField] private Transform stationGridContent;   // Content ใน ScrollView Station
+    [SerializeField] private GameObject slotPrefab;          // Prefab ช่องแสดงผล (ที่มี GenericSlotUI ติดอยู่)
+
+    [Header("=== References ===")]
+    [SerializeField] private CollectionDetailPanel detailPanel; // หน้า Popup รายละเอียด
+
+    [Header("=== Data List ===")]
     public List<AnimalData> animalList = new List<AnimalData>();
+    public List<StationData> stationList = new List<StationData>();
 
-    [Header("Grid Setup")]
-    [Tooltip("Content object ของ ScrollRect ที่มี GridLayoutGroup ติดอยู่ (Fixed Column Count = 2)")]
-    public Transform gridContent;
-    public GameObject slotPrefab;
+    private GameObject currentPanel;
 
-    [Header("References")]
-    [Tooltip("Root object ของ UI Collection นี้เอง สำหรับให้ปุ่ม Back ปิดได้")]
-    public GameObject collectionPanel;
-    public AnimalDetailPanel detailPanel;
+    private void Awake()
+    {
+        // ตั้งค่าเริ่มต้นให้หมวด Pet เป็น Panel แรก
+        currentPanel = petPanel;
+    }
+
+    private void Start()
+    {
+        // ========= ปุ่มหมวด Pet =========
+        petTabBtn.onClick.AddListener(() =>
+        {
+            if (currentPanel == petPanel) return;
+
+            currentPanel.SetActive(false);
+            currentPanel = petPanel;
+            currentPanel.SetActive(true);
+        });
+
+        // ========= ปุ่มหมวด Station =========
+        stationTabBtn.onClick.AddListener(() =>
+        {
+            if (currentPanel == stationPanel) return;
+
+            currentPanel.SetActive(false);
+            currentPanel = stationPanel;
+            currentPanel.SetActive(true);
+        });
+
+        // ========= ปุ่มปิดหน้า Collection =========
+        if (backBtn != null)
+        {
+            backBtn.onClick.AddListener(() =>
+            {
+                CloseCollection();
+            });
+        }
+
+        // สร้าง Item ใน Grid ทั้งสองหมวดเตรียมไว้
+        PopulatePetGrid();
+        PopulateStationGrid();
+
+        // รีเซ็ตหน้าเปิดเริ่มต้น
+        ResetToDefaultPanel();
+    }
 
     private void OnEnable()
     {
-        PopulateGrid();
+        // ทุกครั้งที่เปิดหน้า Collection ให้เด้งกลับมาหมวด Pet เสมอ
+        ResetToDefaultPanel();
     }
 
-    private void PopulateGrid()
+    private void ResetToDefaultPanel()
     {
-        // เคลียร์ของเก่าก่อนกันซ้ำ (เผื่อเปิดใหม่หลายรอบ)
-        foreach (Transform child in gridContent)
+        if (petPanel == null || stationPanel == null) return;
+
+        petPanel.SetActive(true);
+        stationPanel.SetActive(false);
+        currentPanel = petPanel;
+    }
+
+    // --- ระบบดึง Data เข้า Grid ---
+
+    private void PopulatePetGrid()
+    {
+        if (petGridContent == null) return;
+
+        foreach (Transform child in petGridContent)
         {
             Destroy(child.gameObject);
         }
@@ -40,18 +103,38 @@ public class CollectionManager : MonoBehaviour
         {
             if (data == null) continue;
 
-            GameObject slotObj = Instantiate(slotPrefab, gridContent);
-            AnimalSlotUI slotUI = slotObj.GetComponent<AnimalSlotUI>();
+            GameObject slotObj = Instantiate(slotPrefab, petGridContent);
+            GenericSlotUI slotUI = slotObj.GetComponent<GenericSlotUI>();
             if (slotUI != null)
             {
                 slotUI.Setup(data, OnAnimalSlotClicked);
             }
-            else
+        }
+    }
+
+    private void PopulateStationGrid()
+    {
+        if (stationGridContent == null) return;
+
+        foreach (Transform child in stationGridContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (StationData data in stationList)
+        {
+            if (data == null) continue;
+
+            GameObject slotObj = Instantiate(slotPrefab, stationGridContent);
+            GenericSlotUI slotUI = slotObj.GetComponent<GenericSlotUI>();
+            if (slotUI != null)
             {
-                Debug.LogWarning("slotPrefab ไม่มี component AnimalSlotUI ติดอยู่", slotObj);
+                slotUI.Setup(data, OnStationSlotClicked);
             }
         }
     }
+
+    // --- เมื่อคลิกเลือก Slot ---
 
     private void OnAnimalSlotClicked(AnimalData data)
     {
@@ -61,12 +144,19 @@ public class CollectionManager : MonoBehaviour
         }
     }
 
-    /// <summary>เรียกจากปุ่ม Back ใน Inspector (OnClick)</summary>
+    private void OnStationSlotClicked(StationData data)
+    {
+        if (detailPanel != null)
+        {
+            detailPanel.Open(data);
+        }
+    }
+
     public void CloseCollection()
     {
-        if (collectionPanel != null)
+        if (collectionRootPanel != null)
         {
-            collectionPanel.SetActive(false);
+            collectionRootPanel.SetActive(false);
         }
     }
 }

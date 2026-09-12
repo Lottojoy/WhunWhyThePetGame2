@@ -16,9 +16,14 @@ MonoBehaviour:
   stationType: 5
   stationName: Polishing Station
   unlockCondition: Start the game (Day 4) And haveDrying Station Lv. 2
+  isUnlocked: 0
   description: 'Condition and gloss fur for a beautiful finish.
 
 '
+  colorSprite: {fileID: 21300000, guid: acf6fec6978d4a844b898aca9791621a, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: 5ee46c424333c5340865125ca9e85808, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: 3882812c65013c94fa64ffbc5297f917,
+    type: 3}
   requiresPlayerInteraction: 1
   levelStats:
   - level: 1

@@ -16,9 +16,14 @@ MonoBehaviour:
   stationType: 1
   stationName: Bathing Station
   unlockCondition: Start the game (Day 1)
+  isUnlocked: 1
   description: 'Perform initial cleaning to remove stains.
 
 '
+  colorSprite: {fileID: 21300000, guid: cc2d48a0fc00492419a6689e98621ba5, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: e489b51afe518d54cb68be205a99318f, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: 1a2e030b7f62bf843a956d06491c8e23,
+    type: 3}
   requiresPlayerInteraction: 1
   levelStats:
   - level: 1

@@ -16,9 +16,14 @@ MonoBehaviour:
   stationType: 3
   stationName: Resting Cage
   unlockCondition: Start the game (Day 2)
+  isUnlocked: 1
   description: 'Allow your animal to rest and recover from stress.
 
 '
+  colorSprite: {fileID: 21300000, guid: 3a70fa292806160468d313782caf448f, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: 60c596a6cfdb9b24ba7ff372287478b6, type: 3}
+  modelPrefab: {fileID: 8931525217179229635, guid: 189eeecb51ca5634d9a7e75ec6e8e85e,
+    type: 3}
   requiresPlayerInteraction: 0
   levelStats:
   - level: 1

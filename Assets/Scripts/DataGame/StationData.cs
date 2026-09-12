@@ -22,9 +22,14 @@ public class StationData : ScriptableObject
     public StationType stationType;
     public string stationName;
     public string unlockCondition; // เงื่อนไขปลดล็อคให้ซื้อ Lv.1 ได้
-
+    public bool isUnlocked = true; // ตั้งเป็น true ไว้ก่อนเพื่อให้ Station แสดงผลได้เลย
     [TextArea(3, 6)]
     public string description;
+
+    [Header("รูปภาพ UI")]
+    public Sprite colorSprite;
+    public Sprite silhouetteSprite;
+    public GameObject modelPrefab;
 
     [Header("ระบบการเล่น (Gameplay Setup)")]
     [Tooltip("จำเป็นต้องมีผู้เล่น (สัตวแพทย์) ไปยืนกดทำงานหรือไม่?")]

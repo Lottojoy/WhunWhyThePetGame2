@@ -56,7 +56,7 @@ public class PlayerMove : NetworkBehaviour
     private void GameInputs_OnInteractAction(object sender, EventArgs e)
     {
         if (selectedCounter != null)
-            selectedCounter.Interact();
+            selectedCounter.Interact(GetComponent<Player>());
     }
 
     private void Update()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,158 +6,274 @@ using UnityEngine.UI;
 public class CollectionManager : MonoBehaviour
 {
     [Header("=== Panels ===")]
-    [SerializeField] private GameObject collectionRootPanel; // หน้าต่าง UI Collection ทั้งหมด (สำหรับปุ่มปิด)
-    [SerializeField] private GameObject petPanel;            // ScrollView หรือ Panel ของสัตว์
-    [SerializeField] private GameObject stationPanel;        // ScrollView หรือ Panel ของ Station
+    [SerializeField] private GameObject collectionRootPanel; // ===Collection_UICanvas===
+    [SerializeField] private CanvasGroup rootCanvasGroup;     // Component CanvasGroup บน Canvas หลัก
+    [SerializeField] private GameObject petPanel;
+    [SerializeField] private GameObject stationPanel;
+
+    [Header("=== Transition Settings ===")]
+    [Tooltip("ระยะเวลาอนิเมชันตอนเปิด/ปิด (วินาที)")]
+    [SerializeField] private float transitionDuration = 0.25f;
+    [Tooltip("เส้นโค้งควบคุมความเร็ว สามารถปรับดัดโค้งให้มีเอฟเฟกต์เด้ง (Bounce) ได้")]
+    [SerializeField] private AnimationCurve transitionCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+
+    [Header("=== Key Binding Setup ===")]
+    [SerializeField] private KeyCode toggleKey = KeyCode.C;
 
     [Header("=== Category Buttons ===")]
-    [SerializeField] private Button petTabBtn;               // ปุ่มสลับมาดูสัตว์
-    [SerializeField] private Button stationTabBtn;           // ปุ่มสลับมาดู Station
-    [SerializeField] private Button backBtn;                 // ปุ่มปิด/ย้อนกลับ
+    [SerializeField] private Button petTabBtn;
+    [SerializeField] private Button stationTabBtn;
+    [SerializeField] private Button backBtn;
 
     [Header("=== Grid Content Setup ===")]
-    [SerializeField] private Transform petGridContent;       // Content ใน ScrollView สัตว์
-    [SerializeField] private Transform stationGridContent;   // Content ใน ScrollView Station
-    [SerializeField] private GameObject slotPrefab;          // Prefab ช่องแสดงผล (ที่มี GenericSlotUI ติดอยู่)
+    [SerializeField] private Transform petGridContent;
+    [SerializeField] private Transform stationGridContent;
+    [SerializeField] private GameObject slotPrefab;
 
     [Header("=== References ===")]
-    [SerializeField] private CollectionDetailPanel detailPanel; // หน้า Popup รายละเอียด
+    [SerializeField] private CollectionDetailPanel detailPanel;
 
     [Header("=== Data List ===")]
     public List<AnimalData> animalList = new List<AnimalData>();
     public List<StationData> stationList = new List<StationData>();
 
     private GameObject currentPanel;
+    private RectTransform _rootRectTransform;
+    private Coroutine _transitionCoroutine;
+    private bool _isOpen = false;
 
     private void Awake()
     {
-        // ตั้งค่าเริ่มต้นให้หมวด Pet เป็น Panel แรก
-        currentPanel = petPanel;
+        if (petPanel != null) currentPanel = petPanel;
+
+        if (collectionRootPanel != null)
+        {
+            _rootRectTransform = collectionRootPanel.GetComponent<RectTransform>();
+            if (rootCanvasGroup == null)
+            {
+                rootCanvasGroup = collectionRootPanel.GetComponent<CanvasGroup>();
+                if (rootCanvasGroup == null)
+                {
+                    rootCanvasGroup = collectionRootPanel.AddComponent<CanvasGroup>();
+                }
+            }
+        }
     }
 
     private void Start()
     {
-        // ========= ปุ่มหมวด Pet =========
-        petTabBtn.onClick.AddListener(() =>
+        if (petTabBtn != null)
         {
-            if (currentPanel == petPanel) return;
-
-            currentPanel.SetActive(false);
-            currentPanel = petPanel;
-            currentPanel.SetActive(true);
-        });
-
-        // ========= ปุ่มหมวด Station =========
-        stationTabBtn.onClick.AddListener(() =>
-        {
-            if (currentPanel == stationPanel) return;
-
-            currentPanel.SetActive(false);
-            currentPanel = stationPanel;
-            currentPanel.SetActive(true);
-        });
-
-        // ========= ปุ่มปิดหน้า Collection =========
-        if (backBtn != null)
-        {
-            backBtn.onClick.AddListener(() =>
-            {
-                CloseCollection();
-            });
+            petTabBtn.onClick.RemoveAllListeners();
+            petTabBtn.onClick.AddListener(ShowPetTab);
         }
 
-        // สร้าง Item ใน Grid ทั้งสองหมวดเตรียมไว้
+        if (stationTabBtn != null)
+        {
+            stationTabBtn.onClick.RemoveAllListeners();
+            stationTabBtn.onClick.AddListener(ShowStationTab);
+        }
+
+        if (backBtn != null)
+        {
+            backBtn.onClick.RemoveAllListeners();
+            backBtn.onClick.AddListener(CloseCollection);
+        }
+
         PopulatePetGrid();
         PopulateStationGrid();
 
-        // รีเซ็ตหน้าเปิดเริ่มต้น
-        ResetToDefaultPanel();
+        // ซ่อนหน้าต่างเริ่มต้นโดยไม่เล่นอนิเมชัน
+        SetCanvasStateDirectly(false);
     }
 
-    private void OnEnable()
+    private void Update()
     {
-        // ทุกครั้งที่เปิดหน้า Collection ให้เด้งกลับมาหมวด Pet เสมอ
-        ResetToDefaultPanel();
+        if (Input.GetKeyDown(toggleKey))
+        {
+            ToggleCollection();
+        }
     }
 
-    private void ResetToDefaultPanel()
+    /// <summary>สลับสถานะเปิด/ปิดพร้อม Transition</summary>
+    public void ToggleCollection()
     {
-        if (petPanel == null || stationPanel == null) return;
+        if (_isOpen)
+        {
+            CloseCollection();
+        }
+        else
+        {
+            OpenCollection();
+        }
+    }
 
-        petPanel.SetActive(true);
-        stationPanel.SetActive(false);
+    public void OpenCollection()
+    {
+        _isOpen = true;
+        if (collectionRootPanel != null) collectionRootPanel.SetActive(true);
+        ResetToDefaultPanel();
+
+        PlayTransition(isOpen: true);
+    }
+
+    public void CloseCollection()
+    {
+        _isOpen = false;
+        PlayTransition(isOpen: false, onComplete: () =>
+        {
+            if (collectionRootPanel != null) collectionRootPanel.SetActive(false);
+        });
+    }
+
+    private void PlayTransition(bool isOpen, System.Action onComplete = null)
+    {
+        if (_transitionCoroutine != null) StopCoroutine(_transitionCoroutine);
+        _transitionCoroutine = StartCoroutine(AnimateCanvasRoutine(isOpen, onComplete));
+    }
+
+    private IEnumerator AnimateCanvasRoutine(bool isOpen, System.Action onComplete)
+    {
+        if (rootCanvasGroup != null)
+        {
+            rootCanvasGroup.interactable = false;
+            rootCanvasGroup.blocksRaycasts = false;
+        }
+
+        float startAlpha = rootCanvasGroup != null ? rootCanvasGroup.alpha : (isOpen ? 0f : 1f);
+        float targetAlpha = isOpen ? 1f : 0f;
+
+        Vector3 startScale = isOpen ? Vector3.one * 0.85f : Vector3.one;
+        Vector3 targetScale = isOpen ? Vector3.one : Vector3.one * 0.85f;
+
+        float elapsed = 0f;
+
+        while (elapsed < transitionDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / transitionDuration);
+            float curveT = transitionCurve.Evaluate(progress);
+
+            if (rootCanvasGroup != null)
+            {
+                rootCanvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, curveT);
+            }
+
+            if (_rootRectTransform != null)
+            {
+                _rootRectTransform.localScale = Vector3.LerpUnclamped(startScale, targetScale, curveT);
+            }
+
+            yield return null;
+        }
+
+        if (rootCanvasGroup != null)
+        {
+            rootCanvasGroup.alpha = targetAlpha;
+            rootCanvasGroup.interactable = isOpen;
+            rootCanvasGroup.blocksRaycasts = isOpen;
+        }
+
+        if (_rootRectTransform != null)
+        {
+            _rootRectTransform.localScale = targetScale;
+        }
+
+        onComplete?.Invoke();
+        _transitionCoroutine = null;
+    }
+
+    private void SetCanvasStateDirectly(bool isOpen)
+    {
+        _isOpen = isOpen;
+        if (rootCanvasGroup != null)
+        {
+            rootCanvasGroup.alpha = isOpen ? 1f : 0f;
+            rootCanvasGroup.interactable = isOpen;
+            rootCanvasGroup.blocksRaycasts = isOpen;
+        }
+        if (collectionRootPanel != null)
+        {
+            collectionRootPanel.SetActive(isOpen);
+        }
+    }
+
+    public void ShowPetTab()
+    {
+        if (currentPanel == petPanel && petPanel != null && petPanel.activeSelf) return;
+
+        if (currentPanel != null) currentPanel.SetActive(false);
+        if (petPanel != null)
+        {
+            petPanel.SetActive(true);
+            currentPanel = petPanel;
+        }
+        if (stationPanel != null) stationPanel.SetActive(false);
+    }
+
+    public void ShowStationTab()
+    {
+        if (currentPanel == stationPanel && stationPanel != null && stationPanel.activeSelf) return;
+
+        if (currentPanel != null) currentPanel.SetActive(false);
+        if (stationPanel != null)
+        {
+            stationPanel.SetActive(true);
+            currentPanel = stationPanel;
+        }
+        if (petPanel != null) petPanel.SetActive(false);
+    }
+
+    public void ResetToDefaultPanel()
+    {
+        if (petPanel != null) petPanel.SetActive(true);
+        if (stationPanel != null) stationPanel.SetActive(false);
         currentPanel = petPanel;
     }
 
-    // --- ระบบดึง Data เข้า Grid ---
-
     private void PopulatePetGrid()
     {
-        if (petGridContent == null) return;
+        if (petGridContent == null || slotPrefab == null) return;
 
-        foreach (Transform child in petGridContent)
+        for (int i = petGridContent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Destroy(petGridContent.GetChild(i).gameObject);
         }
 
         foreach (AnimalData data in animalList)
         {
             if (data == null) continue;
-
             GameObject slotObj = Instantiate(slotPrefab, petGridContent);
             GenericSlotUI slotUI = slotObj.GetComponent<GenericSlotUI>();
-            if (slotUI != null)
-            {
-                slotUI.Setup(data, OnAnimalSlotClicked);
-            }
+            if (slotUI != null) slotUI.Setup(data, OnAnimalSlotClicked);
         }
     }
 
     private void PopulateStationGrid()
     {
-        if (stationGridContent == null) return;
+        if (stationGridContent == null || slotPrefab == null) return;
 
-        foreach (Transform child in stationGridContent)
+        for (int i = stationGridContent.childCount - 1; i >= 0; i--)
         {
-            Destroy(child.gameObject);
+            Destroy(stationGridContent.GetChild(i).gameObject);
         }
 
         foreach (StationData data in stationList)
         {
             if (data == null) continue;
-
             GameObject slotObj = Instantiate(slotPrefab, stationGridContent);
             GenericSlotUI slotUI = slotObj.GetComponent<GenericSlotUI>();
-            if (slotUI != null)
-            {
-                slotUI.Setup(data, OnStationSlotClicked);
-            }
+            if (slotUI != null) slotUI.Setup(data, OnStationSlotClicked);
         }
     }
 
-    // --- เมื่อคลิกเลือก Slot ---
-
     private void OnAnimalSlotClicked(AnimalData data)
     {
-        if (detailPanel != null)
-        {
-            detailPanel.Open(data);
-        }
+        if (detailPanel != null) detailPanel.Open(data);
     }
 
     private void OnStationSlotClicked(StationData data)
     {
-        if (detailPanel != null)
-        {
-            detailPanel.Open(data);
-        }
-    }
-
-    public void CloseCollection()
-    {
-        if (collectionRootPanel != null)
-        {
-            collectionRootPanel.SetActive(false);
-        }
+        if (detailPanel != null) detailPanel.Open(data);
     }
 }

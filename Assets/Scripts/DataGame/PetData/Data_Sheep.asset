@@ -21,7 +21,7 @@ MonoBehaviour:
 '
   colorSprite: {fileID: 21300000, guid: 2eea1233e492c2d4591febd12aa3c3cc, type: 3}
   silhouetteSprite: {fileID: 21300000, guid: 6f9dcddad34890d4a85dcbcabbbfb8d4, type: 3}
-  modelPrefab: {fileID: 8931525217179229635, guid: 7008f722b016fc04cbdb2d05230a23be,
+  modelPrefab: {fileID: 8931525217179229635, guid: dd8c61b043289ab4b9f65a03a58d0009,
     type: 3}
   isUnlocked: 0
   patienceTimes:

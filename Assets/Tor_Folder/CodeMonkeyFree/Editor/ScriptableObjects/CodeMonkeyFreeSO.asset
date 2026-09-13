@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentVersion: 1.01
   subtype: kitchenchaos
-  lastShownTimestamp: 1789231730
+  lastShownTimestamp: 1789318276
   lastUpdateResponse:
     version: 1.01
     versionUrl: https://unitycodemonkey.com
-  checkedLastUpdateTimestamp: 1789231730
+  checkedLastUpdateTimestamp: 1789318276
   lastQOTDResponse:
     questionId: 341
     questionText: What is the difference between Action&lt;float&gt; and Func&lt;float&gt;
@@ -30,7 +30,7 @@ MonoBehaviour:
       returns float
     answerD: 
     answerE: 
-  lastQotdTimestamp: 1789231730
+  lastQotdTimestamp: 1789318276
   lastDynamicHeaderResponse:
     topImageUrl: https://codemonkeyexternal.blob.core.windows.net/external/Misc/humbleSep26Maksym.png
     topText: AWESOME Characters and Weapons 98% OFF! (Modern, Medieval, Fantasy,
@@ -39,11 +39,11 @@ MonoBehaviour:
     bottomText: Escape Tutorial Hell and level up your skills, try my Practice Lab
       for FREE!
     bottomLink: practicelab
-  lastDynamicHeaderTimestamp: 1789231730
+  lastDynamicHeaderTimestamp: 1789318276
   websiteLatestMessage:
     text: <a href="https://cmonkey.co/freecourses">Check out all my FREE courses!
       Click here!</a>
-  websiteLatestMessageTimestamp: 1789231730
+  websiteLatestMessageTimestamp: 1789318276
   websiteLatestVideos:
     videos:
     - youTubeId: QNXgOuo7-Iw
@@ -55,4 +55,4 @@ MonoBehaviour:
       title: Unity 6.6 is here and it has 3 MASSIVE IMPROVEMENTS!
     - youTubeId: 8xj9IEFRgKo
       title: THIS is how you go from BEGINNER to ADVANCED!
-  websiteLatestVideosTimestamp: 1789231730
+  websiteLatestVideosTimestamp: 1789318276

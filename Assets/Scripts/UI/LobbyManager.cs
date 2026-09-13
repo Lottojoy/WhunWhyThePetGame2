@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -51,6 +50,20 @@ public class LobbyManager : NetworkBehaviour
             {
                 AddPlayerToServer(client.ClientId);
             }
+            // Host also registers their real name from PlayerNameStorage
+            string hostName = PlayerNameStorage.PlayerName;
+            if (string.IsNullOrEmpty(hostName)) hostName = "Player";
+            SetPlayerName(NetworkManager.Singleton.LocalClientId, hostName);
+            Debug.Log($"[Server] Host registered name: {hostName} (ClientId: {NetworkManager.Singleton.LocalClientId})");
+        }
+
+        if (IsClient && !IsServer)
+        {
+            // Client registers their real name
+            string clientName = PlayerNameStorage.PlayerName;
+            if (string.IsNullOrEmpty(clientName)) clientName = "Player";
+            RegisterNameServerRpc(clientName);
+            Debug.Log($"[Client] Sending name to server: {clientName}");
         }
     }
 
@@ -64,12 +77,14 @@ public class LobbyManager : NetworkBehaviour
     private void OnServerClientConnected(ulong clientId)
     {
         if (!IsServer) return;
+        Debug.Log($"[Server] Client {clientId} connected. Total players: {playerEntries.Count}");
         AddPlayerToServer(clientId);
     }
 
     private void OnServerClientDisconnected(ulong clientId)
     {
         if (!IsServer) return;
+        Debug.Log($"[Server] Client {clientId} disconnected.");
         RemovePlayerFromServer(clientId);
     }
 
@@ -82,6 +97,7 @@ public class LobbyManager : NetworkBehaviour
         }
 
         string playerName = $"Player {clientId}";
+        Debug.Log($"[Server] Adding player: {playerName} (ClientId: {clientId})");
         playerEntries.Add(new PlayerEntry
         {
             ClientId = clientId,
@@ -126,6 +142,7 @@ public class LobbyManager : NetworkBehaviour
     private void RegisterNameServerRpc(FixedString64Bytes playerName, ServerRpcParams rpcParams = default)
     {
         ulong clientId = rpcParams.Receive.SenderClientId;
+        Debug.Log($"[Server] Client {clientId} registered name: {playerName}");
         SetPlayerName(clientId, playerName.ToString());
     }
 
@@ -133,6 +150,7 @@ public class LobbyManager : NetworkBehaviour
 
     private void OnPlayerListChanged(NetworkListEvent<PlayerEntry> changeEvent)
     {
+        Debug.Log($"[Lobby] Player list changed. Total: {playerEntries.Count}");
         RefreshPlayerListUI();
     }
 
@@ -167,28 +185,6 @@ public class LobbyManager : NetworkBehaviour
         ShowLocalPlayer();
     }
 
-    void Update()
-    {
-        // Register local player name with server once connected
-        if (IsClient && !IsServer && !nameRegistered)
-        {
-            SendNameOnce();
-        }
-    }
-
-    private bool nameRegistered = false;
-    private void SendNameOnce()
-    {
-        if (nameRegistered) return;
-        if (NetworkManager.Singleton == null) return;
-        if (!NetworkManager.Singleton.IsClient) return;
-
-        nameRegistered = true;
-        string name = PlayerNameStorage.PlayerName;
-        if (string.IsNullOrEmpty(name)) name = "Player";
-        RegisterNameServerRpc(name);
-    }
-
     private void ShowLocalPlayer()
     {
         if (playerListContainer == null) return;
@@ -218,15 +214,13 @@ public class LobbyManager : NetworkBehaviour
         ulong localId = NetworkManager.Singleton.LocalClientId;
         ulong serverId = NetworkManager.ServerClientId;
 
-        // Sort: local first, then host, then by ClientId
+        // Sort: host first, then by ClientId (connection order)
         var sorted = new List<PlayerEntry>();
         for (int i = 0; i < playerEntries.Count; i++)
             sorted.Add(playerEntries[i]);
 
         sorted.Sort((a, b) =>
         {
-            if (a.ClientId == localId) return -1;
-            if (b.ClientId == localId) return 1;
             if (a.ClientId == serverId) return -1;
             if (b.ClientId == serverId) return 1;
             return a.ClientId.CompareTo(b.ClientId);
@@ -249,7 +243,7 @@ public class LobbyManager : NetworkBehaviour
             if (tmp != null)
             {
                 tmp.text = displayName;
-                tmp.color = isLocal ? Color.green : Color.white;
+                tmp.color = isLocal ? Color.green : Color.black;
             }
             slot.gameObject.SetActive(true);
             slotIndex++;

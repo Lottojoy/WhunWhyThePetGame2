@@ -30,13 +30,16 @@ namespace CodeMonkey.FreeWindow {
 
             try {
                 CodeMonkeyFreeSO codeMonkeyInteractiveSO = CodeMonkeyFreeSO.GetCodeMonkeyFreeSO();
+                if (codeMonkeyInteractiveSO == null) {
+                    return;
+                }
                 long unixTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 long secondsBetweenShowingWindow = 60 * 60 * 24;
                 if (unixTimestamp - codeMonkeyInteractiveSO.lastShownTimestamp < secondsBetweenShowingWindow) {
                     // Too soon
                     return;
                 }
-                
+
                 codeMonkeyInteractiveSO.lastShownTimestamp = unixTimestamp;
 
                 ShowWindow();

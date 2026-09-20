@@ -14,11 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentVersion: 1.01
   subtype: kitchenchaos
+<<<<<<< Updated upstream
   lastShownTimestamp: 1789882344
   lastUpdateResponse:
     version: 1.01
     versionUrl: https://unitycodemonkey.com
   checkedLastUpdateTimestamp: 1789882344
+=======
+  lastShownTimestamp: 1789909887
+  lastUpdateResponse:
+    version: 1.01
+    versionUrl: https://unitycodemonkey.com
+  checkedLastUpdateTimestamp: 1789909887
+>>>>>>> Stashed changes
   lastQOTDResponse:
     questionId: 344
     questionText: 'What will be the value of isOne?
@@ -32,7 +40,11 @@ MonoBehaviour:
     answerC: 
     answerD: 
     answerE: 
+<<<<<<< Updated upstream
   lastQotdTimestamp: 1789882344
+=======
+  lastQotdTimestamp: 1789909887
+>>>>>>> Stashed changes
   lastDynamicHeaderResponse:
     topImageUrl: https://codemonkeyexternal.blob.core.windows.net/external/Misc/codeMonkeyToolkit50Off.png
     topText: My Toolkit is 50% OFF! 50+ Tools and Elements to help you make games
@@ -41,11 +53,19 @@ MonoBehaviour:
     bottomText: Escape Tutorial Hell and level up your skills, try my Practice Lab
       for FREE!
     bottomLink: practicelab
+<<<<<<< Updated upstream
   lastDynamicHeaderTimestamp: 1789882344
   websiteLatestMessage:
     text: <a href="https://cmonkey.co/freecourses">Check out all my FREE courses!
       Click here!</a>
   websiteLatestMessageTimestamp: 1789882344
+=======
+  lastDynamicHeaderTimestamp: 1789909887
+  websiteLatestMessage:
+    text: <a href="https://cmonkey.co/freecourses">Check out all my FREE courses!
+      Click here!</a>
+  websiteLatestMessageTimestamp: 1789909887
+>>>>>>> Stashed changes
   websiteLatestVideos:
     videos:
     - youTubeId: WFk_vADgnAo
@@ -56,4 +76,8 @@ MonoBehaviour:
       title: Every Game you make should make your NEXT Game Easier!
     - youTubeId: QNXgOuo7-Iw
       title: TOP 10 FREE NEW Assets SEPTEMBER 2026!
+<<<<<<< Updated upstream
   websiteLatestVideosTimestamp: 1789882344
+=======
+  websiteLatestVideosTimestamp: 1789909887
+>>>>>>> Stashed changes

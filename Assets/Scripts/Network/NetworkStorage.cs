@@ -37,6 +37,12 @@ public class NetworkStorage : NetworkBehaviour
 
     private bool subscribedCallbacks = false;
 
+    void Start()
+    {
+        NetworkStorage.Instance.RegisterModule(new PlayerScoreModule());
+    }
+
+
     void Awake()
     {
         if (Instance != null && Instance != this)

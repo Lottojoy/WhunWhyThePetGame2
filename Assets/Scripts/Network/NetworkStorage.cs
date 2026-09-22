@@ -4,31 +4,28 @@ using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
-public struct PlayerEntry : INetworkSerializable, IEquatable<PlayerEntry>
-{
-    public ulong ClientId;
-    public FixedString64Bytes Name;
-
-    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-    {
-        serializer.SerializeValue(ref ClientId);
-        serializer.SerializeValue(ref Name);
-    }
-
-    public bool Equals(PlayerEntry other)
-    {
-        return ClientId == other.ClientId && Name.Equals(other.Name);
-    }
-
-    public override bool Equals(object obj) => obj is PlayerEntry other && Equals(other);
-    public override int GetHashCode() => ClientId.GetHashCode();
-}
-
 public class NetworkStorage : NetworkBehaviour
 {
     // === Singleton — access anywhere via NetworkStorage.Instance ===
     public static NetworkStorage Instance { get; private set; }
 
+    // === Module system — register INetworkDataModule to get lifecycle hooks ===
+    private readonly List<INetworkDataModule> modules = new List<INetworkDataModule>();
+
+    /// <summary>Register a module. Call in Awake or before OnNetworkSpawn.</summary>
+    public void RegisterModule(INetworkDataModule module)
+    {
+        if (!modules.Contains(module))
+            modules.Add(module);
+    }
+
+    /// <summary>Unregister a module.</summary>
+    public void UnregisterModule(INetworkDataModule module)
+    {
+        modules.Remove(module);
+    }
+
+    // === Player data (built-in) ===
     private NetworkList<PlayerEntry> playerEntries = new NetworkList<PlayerEntry>(
         null, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -55,19 +52,21 @@ public class NetworkStorage : NetworkBehaviour
         base.OnNetworkSpawn();
         playerEntries.OnListChanged += HandleListChanged;
         Debug.Log($"[NS] OnNetworkSpawn — IsServer={IsServer}, IsClient={IsClient}, LocalClientId={NetworkManager.Singleton.LocalClientId}");
+
+        // Notify all registered modules
+        for (int i = 0; i < modules.Count; i++)
+            modules[i].OnNetworkSpawn(this);
+
         if (IsServer)
         {
-            // Subscribe disconnect callback
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnected;
             subscribedCallbacks = true;
 
-            // Add host directly with real name
             ulong localId = NetworkManager.Singleton.LocalClientId;
             string hostName = PlayerNameStorage.PlayerName;
             if (string.IsNullOrEmpty(hostName)) hostName = "Player";
             AddPlayer(localId, hostName);
         }
-        // Client: tell server "I joined, my name is..."
         if (IsClient && !IsServer)
         {
             Debug.Log("Isclient");
@@ -80,6 +79,10 @@ public class NetworkStorage : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        // Notify all registered modules
+        for (int i = 0; i < modules.Count; i++)
+            modules[i].OnNetworkDespawn();
+
         playerEntries.OnListChanged -= HandleListChanged;
 
         if (IsServer && subscribedCallbacks)
@@ -104,7 +107,6 @@ public class NetworkStorage : NetworkBehaviour
 
     // === Server: manage player entries ===
 
-    /// <summary>Server-only. Add a player if not already present. Use initialName for host.</summary>
     public void AddPlayer(ulong clientId, string initialName = null)
     {
         if (!IsServer) return;
@@ -123,7 +125,6 @@ public class NetworkStorage : NetworkBehaviour
         });
     }
 
-    /// <summary>Server-only. Remove a player by clientId.</summary>
     public void RemovePlayer(ulong clientId)
     {
         if (!IsServer) return;
@@ -138,7 +139,6 @@ public class NetworkStorage : NetworkBehaviour
         }
     }
 
-    /// <summary>Server-only. Update a player's display name.</summary>
     public void SetPlayerName(ulong clientId, string name)
     {
         if (!IsServer) return;
@@ -156,8 +156,6 @@ public class NetworkStorage : NetworkBehaviour
             }
         }
     }
-
-    // === RPC: client tells server "I joined, my name is..." ===
 
     [ServerRpc(RequireOwnership = false)]
     public void RegisterNameServerRpc(FixedString64Bytes playerName, ServerRpcParams rpcParams = default)

@@ -22,7 +22,7 @@ MonoBehaviour:
 '
   colorSprite: {fileID: 21300000, guid: cc2d48a0fc00492419a6689e98621ba5, type: 3}
   silhouetteSprite: {fileID: 21300000, guid: e489b51afe518d54cb68be205a99318f, type: 3}
-  modelPrefab: {fileID: 8931525217179229635, guid: 1a2e030b7f62bf843a956d06491c8e23,
+  modelPrefab: {fileID: 4650271106007294426, guid: 1d30d802b2e1df245b2ad090e2c2c99c,
     type: 3}
   requiresPlayerInteraction: 1
   levelStats:

@@ -13,8 +13,8 @@ public class MapManager : MonoBehaviour
     [Header("UI & Indicator")]
     public TMP_Text infoText;
     public GameObject arrowIndicatorPrefab;
+
     private MapSlot _currentHoveredSlot;
-    // เปลี่ยนมาใช้ List เพื่อเก็บลูกศรหลายๆ อัน
     private List<GameObject> _activeArrows = new List<GameObject>();
 
     private bool _isMoving = false;
@@ -35,7 +35,6 @@ public class MapManager : MonoBehaviour
 
     public void SetInfoText(string msg)
     {
-        // ใส่ Log ไว้เช็กด้วยว่าข้อความเปลี่ยนจริงไหม
         if (infoText != null)
         {
             infoText.text = msg;
@@ -53,42 +52,94 @@ public class MapManager : MonoBehaviour
         }
     }
 
+    // 1. สำหรับโหมดย้ายของเดิม
     public void StartMoveMode(StationData data, System.Action onMoveComplete = null)
     {
         MapSlot currentSlot = allSlots.Find(s => s.isOccupied && s.currentStationID == data.stationID);
 
-        if (currentSlot != null)
+        if (currentSlot == null)
         {
-            _movingData = data;
-            _movingModel = currentSlot.placedModel;
-            currentSlot.ClearSlot();
-            _isMoving = true;
-            _waitForMouseRelease = true;
-            _onMoveCompleteCallback = onMoveComplete;
+            Debug.LogWarning($"[Map] ไม่พบตำแหน่งเดิมของ {data.stationName} ระบบจะเปลี่ยนเป็นการหยิบวางใหม่แทน");
+            StartNewPlacementMode(data, onMoveComplete);
+            return;
+        }
 
-            // --- [เพิ่ม] 1. ปิด Collider ของโมเดลที่กำลังลาก เพื่อไม่ให้บังเมาส์ (Raycast) ---
-            Collider[] colliders = _movingModel.GetComponentsInChildren<Collider>();
-            foreach (var col in colliders) col.enabled = false;
+        _movingData = data;
+        _movingModel = currentSlot.placedModel;
+        currentSlot.ClearSlot();
 
-            ClearAllArrows();
+        SetupMovingModel(onMoveComplete);
+    }
 
-            if (arrowIndicatorPrefab != null)
+    // 2. [สำคัญ] สำหรับกรณี "ซื้อใหม่" แล้วหยิบมาวางเลยทันที
+    public void StartNewPlacementMode(StationData data, System.Action onMoveComplete = null)
+    {
+        _movingData = data;
+
+        if (data.modelPrefab != null)
+        {
+            _movingModel = Instantiate(data.modelPrefab);
+        }
+        else
+        {
+            Debug.LogError($"[Map] {data.stationName} ไม่มี Model Prefab!");
+            return;
+        }
+
+        SetupMovingModel(onMoveComplete);
+    }
+
+    private void SetupMovingModel(System.Action onMoveComplete)
+    {
+        _isMoving = true;
+        _waitForMouseRelease = true;
+        _onMoveCompleteCallback = onMoveComplete;
+        _currentHoveredSlot = null; // รีเซ็ตค่าช่องที่เคยชี้
+
+        if (_movingModel == null) return;
+
+        // ปิด Collider ของโมเดลที่กำลังถือ เพื่อไม่ให้บัง Raycast
+        Collider[] colliders = _movingModel.GetComponentsInChildren<Collider>();
+        foreach (var col in colliders)
+        {
+            if (col != null) col.enabled = false;
+        }
+
+        // ปรับ Layer
+        int previewLayer = LayerMask.NameToLayer("ModelPreview");
+        if (previewLayer != -1)
+        {
+            SetLayerRecursively(_movingModel.transform, previewLayer);
+        }
+
+        ClearAllArrows();
+
+        // เสกลูกศรบนช่องว่างทั้งหมด
+        if (arrowIndicatorPrefab != null)
+        {
+            foreach (MapSlot slot in allSlots)
             {
-                foreach (MapSlot slot in allSlots)
+                if (slot != null && !slot.isOccupied)
                 {
-                    if (!slot.isOccupied)
-                    {
-                        GameObject arrow = Instantiate(arrowIndicatorPrefab, slot.transform.position + Vector3.up * 2f, Quaternion.identity);
-                        _activeArrows.Add(arrow);
-                    }
+                    GameObject arrow = Instantiate(arrowIndicatorPrefab, slot.transform.position + Vector3.up * 2f, Quaternion.identity);
+                    _activeArrows.Add(arrow);
                 }
             }
+        }
 
-            SetInfoText("Select Placement Location!!!");
+        SetInfoText("Select Placement Location!!!");
+    }
+
+    private void SetLayerRecursively(Transform trans, int newLayer)
+    {
+        if (trans == null) return;
+        trans.gameObject.layer = newLayer;
+        foreach (Transform child in trans)
+        {
+            if (child != null) SetLayerRecursively(child, newLayer);
         }
     }
 
-    // ฟังก์ชันช่วยลบลูกศรทั้งหมดทิ้งเมื่อวางเสร็จ
     private void ClearAllArrows()
     {
         foreach (GameObject arrow in _activeArrows)
@@ -102,7 +153,7 @@ public class MapManager : MonoBehaviour
     {
         if (_isMoving && _movingModel != null)
         {
-            // ระบบหมุนโมเดล
+            // ระบบหมุนโมเดล (คลิกขวา หรือ ปุ่ม R)
             if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.R))
             {
                 _movingModel.transform.Rotate(0f, 90f, 0f);
@@ -119,46 +170,42 @@ public class MapManager : MonoBehaviour
                     else
                         _movingModel.transform.position = targetSlot.transform.position + Vector3.up * 2f;
 
-                    // --- ระบบจัดการกล่องไม้เปล่าเฉพาะช่องที่เมาส์ชี้ ---
+                    // --- ระบบซ่อนกล่องไม้เฉพาะช่องที่เมาส์ชี้ ---
                     if (targetSlot != _currentHoveredSlot)
                     {
-                        // 1. ถ้าย้ายเมาส์หนีจากช่องเก่า และช่องนั้นว่าง -> เอาโคตรกล่องไม้กลับมาแสดง
                         if (_currentHoveredSlot != null && !_currentHoveredSlot.isOccupied)
                         {
                             _currentHoveredSlot.ShowEmptyModel();
                         }
 
-                        // 2. อัปเดตช่องปัจจุบันที่เมาส์กำลังเล็ง
                         _currentHoveredSlot = targetSlot;
 
-                        // 3. ถ้าช่องใหม่ที่เมาส์ชี้ว่างอยู่ -> สั่งซ่อนกล่องไม้เฉพาะช่องนี้
                         if (_currentHoveredSlot != null && !_currentHoveredSlot.isOccupied)
                         {
                             _currentHoveredSlot.HideEmptyModel();
                         }
                     }
 
-                    // เช็กเปลี่ยนข้อความ
                     if (!targetSlot.isOccupied)
                         SetInfoText("Click Right/R to Rotate\nClick Left to Confirm");
                     else
                         SetInfoText("Select Placement Location!!!");
 
-                    // ลอจิกป้องกันคลิกเบิ้ล
                     if (_waitForMouseRelease)
                     {
                         if (Input.GetMouseButtonUp(0)) _waitForMouseRelease = false;
                         return;
                     }
 
-                    // ตอนคลิกซ้ายเพื่อวาง
                     if (Input.GetMouseButtonDown(0))
                     {
                         if (!targetSlot.isOccupied)
                         {
-                            // เปิด Collider กลับมาทำงานตามปกติเมื่อวางเสร็จ
                             Collider[] colliders = _movingModel.GetComponentsInChildren<Collider>();
-                            foreach (var col in colliders) col.enabled = true;
+                            foreach (var col in colliders)
+                            {
+                                if (col != null) col.enabled = true;
+                            }
 
                             targetSlot.SetStation(_movingData, _movingModel);
                             _isMoving = false;
@@ -177,14 +224,25 @@ public class MapManager : MonoBehaviour
             }
             else
             {
+                // 1. คืนค่ากล่องไม้เปล่าให้ช่องล่าสุด
                 if (_currentHoveredSlot != null)
                 {
                     if (!_currentHoveredSlot.isOccupied) _currentHoveredSlot.ShowEmptyModel();
                     _currentHoveredSlot = null;
                 }
-                // [แก้ไขตรงนี้] เอาคำสั่งโชว์กล่องเปล่าคืนออก 
-                // โมเดลจะเกาะอยู่ที่ช่องล่าสุดที่เมาส์ชี้ผ่าน และกล่องเปล่าจะยังคงซ่อนอยู่
                 SetInfoText("Select Placement Location!!!");
+
+                // 2. --- [เพิ่มโค้ดส่วนนี้] สั่งให้โมเดลลอยตามเมาส์แม้อยู่นอกช่อง ---
+                // สร้างพื้นปูนจำลองล่องหนที่ระดับความสูง Y = 0
+                Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+
+                // ถ้ายิงเลเซอร์จากเมาส์ไปกระทบพื้นจำลอง
+                if (groundPlane.Raycast(ray, out float distance))
+                {
+                    Vector3 hitPoint = ray.GetPoint(distance);
+                    // ให้โมเดลขยับตามเมาส์ และลอยสูงขึ้นมา 2 หน่วย (จะได้ไม่มุดดิน)
+                    _movingModel.transform.position = new Vector3(hitPoint.x, 2f, hitPoint.z);
+                }
             }
         }
     }

@@ -119,7 +119,7 @@ public class ShopManager : MonoBehaviour
                 PopulateShop();
                 if (detailPanel != null) detailPanel.Close(); // ซื้อเสร็จปิด Popup
 
-                AutoPlaceStation(data); // นำไปวางในแมพอัตโนมัติ
+                EnterNewPlacementMode(data);
             }
             else
             {
@@ -223,5 +223,18 @@ public class ShopManager : MonoBehaviour
 
         // บังคับจบที่ตำแหน่งเป้าหมายให้แม่นยำ
         shopPanelRect.anchoredPosition = targetPos;
+    }
+    private void EnterNewPlacementMode(StationData data)
+    {
+        SlideUI(false); // สไลด์ UI หลบ
+
+        if (MapManager.Instance != null)
+        {
+            // เรียกโหมดหยิบของใหม่ที่ MapManager
+            MapManager.Instance.StartNewPlacementMode(data, () =>
+            {
+                SlideUI(true); // วางเสร็จค่อยเลื่อน UI กลับมา
+            });
+        }
     }
 }

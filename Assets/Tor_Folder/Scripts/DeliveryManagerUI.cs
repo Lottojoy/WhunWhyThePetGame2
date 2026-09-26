@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,21 +25,23 @@ public class DeliveryManagerUI : MonoBehaviour
 
     private void UpdateVisual()
     {
-        // 1. ลบ UI เก่าที่ไม่ใช่ Template
         foreach (Transform child in container)
         {
             if (child == animalTemplate) continue;
             Destroy(child.gameObject);
         }
 
-        // 2. วนลูปสร้าง UI ใหม่ และส่งข้อมูล AnimalSO ไปแสดงผล
-        foreach (AnimalSO animalSO in DeliveryManager.Instance.GetWaitingAnimalSOList())
+        List<AnimalOrder> waitingList = DeliveryManager.Instance.GetWaitingOrderList();
+
+        for (int i = 0; i < waitingList.Count; i++)
         {
+            AnimalOrder order = waitingList[i];
             Transform animalTransform = Instantiate(animalTemplate, container);
             animalTransform.gameObject.SetActive(true);
 
-            // ดึงสคริปต์ DeliveryManagerSingleUI แล้วส่งข้อมูลสัตว์เข้าไป
-            animalTransform.GetComponent<DeliveryManagerSingleUI>().SetAnimalSO(animalSO);
+            bool isNewItem = (i == waitingList.Count - 1);
+
+            animalTransform.GetComponent<DeliveryManagerSingleUI>().SetOrder(order, isNewItem);
         }
     }
 }

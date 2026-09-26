@@ -7,11 +7,13 @@ public class DeliveryManager : MonoBehaviour
 {
     public static DeliveryManager Instance { get; private set; }
 
-    // Event สื่อสารเมื่อมีสัตว์เพิ่มในคิว
     public event EventHandler OnAnimalSpawned;
+    public event EventHandler OnAnimalOrderExpired; // เผื่อใช้ตอนหมดเวลา
 
     [SerializeField] private AnimalListSO animalListSOs;
-    private List<AnimalSO> waitingAnimalSOList;
+    [SerializeField] private PetDifficulty currentDifficulty = PetDifficulty.Easy;
+
+    private List<AnimalOrder> waitingOrderList;
     private float spawnTimer;
     private float spawnTimerMax = 4f;
     private int waitingAnimalMax = 4;
@@ -19,7 +21,7 @@ public class DeliveryManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        waitingAnimalSOList = new List<AnimalSO>();
+        waitingOrderList = new List<AnimalOrder>();
     }
 
     private void Update()
@@ -29,19 +31,57 @@ public class DeliveryManager : MonoBehaviour
         {
             spawnTimer = spawnTimerMax;
 
-            if (animalListSOs != null && animalListSOs.animalList.Count > 0 && waitingAnimalSOList.Count < waitingAnimalMax)
+            if (animalListSOs != null && animalListSOs.animalList.Count > 0 && waitingOrderList.Count < waitingAnimalMax)
             {
-                AnimalSO randomAnimalSO = animalListSOs.animalList[UnityEngine.Random.Range(0, animalListSOs.animalList.Count)];
-                waitingAnimalSOList.Add(randomAnimalSO);
+                int randomIndex = UnityEngine.Random.Range(0, animalListSOs.animalList.Count);
+                AnimalData randomAnimalSO = animalListSOs.animalList[randomIndex];
 
-                // แจ้ง UI ว่ามีสัตว์เข้ามาใหม่แล้ว
+                List<StationType> shuffledStations = new List<StationType>(randomAnimalSO.usableStations);
+                Shuffle(shuffledStations);
+
+                int actionCount = shuffledStations.Count > 0
+                    ? UnityEngine.Random.Range(1, shuffledStations.Count + 1)
+                    : 0;
+
+                AnimalOrder newOrder = new AnimalOrder
+                {
+                    animalData = randomAnimalSO,
+                    requiredStations = shuffledStations.GetRange(0, actionCount),
+                    spawnTime = Time.time,
+                    patienceTime = randomAnimalSO.GetPatienceTime(currentDifficulty)
+                };
+
+                waitingOrderList.Add(newOrder);
+
                 OnAnimalSpawned?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        // เช็คว่ามี order ไหนหมดเวลาหรือยัง (ถ้าจะทำระบบสัตว์หนีในอนาคต)
+        for (int i = waitingOrderList.Count - 1; i >= 0; i--)
+        {
+            AnimalOrder order = waitingOrderList[i];
+            float elapsed = Time.time - order.spawnTime;
+            if (elapsed >= order.patienceTime)
+            {
+                waitingOrderList.RemoveAt(i);
+                OnAnimalOrderExpired?.Invoke(this, EventArgs.Empty);
+                OnAnimalSpawned?.Invoke(this, EventArgs.Empty); // ให้ UI รีเฟรชด้วย
             }
         }
     }
 
-    public List<AnimalSO> GetWaitingAnimalSOList()
+    private void Shuffle<T>(List<T> list)
     {
-        return waitingAnimalSOList;
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int j = UnityEngine.Random.Range(0, i + 1);
+            (list[i], list[j]) = (list[j], list[i]);
+        }
+    }
+
+    public List<AnimalOrder> GetWaitingOrderList()
+    {
+        return waitingOrderList;
     }
 }

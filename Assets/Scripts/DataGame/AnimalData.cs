@@ -14,6 +14,7 @@ public class AnimalData : ScriptableObject
 
     public Sprite colorSprite;
     public Sprite silhouetteSprite;
+    public Sprite orderIconSprite;
     public GameObject modelPrefab;
     public bool isUnlocked = false;
 

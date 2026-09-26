@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Animal List
   m_EditorClassIdentifier: 
   animalList:
-  - {fileID: 11400000, guid: 425306577cc87494d9c00dd8916214fd, type: 2}
-  - {fileID: 11400000, guid: c254128f9d25a2a4e9ecce8d6f7b2625, type: 2}
-  - {fileID: 11400000, guid: 69c5bd7cbc1b1584abca0f9f500e06f3, type: 2}
-  AnimalName: 
+  - {fileID: 11400000, guid: d33c2bfd49f2ee843a0e68adf96a1199, type: 2}
+  - {fileID: 11400000, guid: 94fa72a29a40ea34bac31ec29779892b, type: 2}
+  - {fileID: 11400000, guid: 0800b63cd031f7145852fcf929c7b53e, type: 2}
+  - {fileID: 11400000, guid: 5ec3aa479ef33ad4888c7754608136b5, type: 2}

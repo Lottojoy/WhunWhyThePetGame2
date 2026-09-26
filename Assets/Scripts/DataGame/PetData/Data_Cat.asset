@@ -20,6 +20,7 @@ MonoBehaviour:
 '
   colorSprite: {fileID: 21300000, guid: c29ae55d59c1ee249a057b9058719d4b, type: 3}
   silhouetteSprite: {fileID: 21300000, guid: e0dd11212c3b4af44b2d7e95db021b89, type: 3}
+  orderIconSprite: {fileID: 21300000, guid: a350587192f9dfa43ac8147d67b02eca, type: 3}
   modelPrefab: {fileID: 8931525217179229635, guid: db8ab8f38b5555e4381fe3629b316b06,
     type: 3}
   isUnlocked: 1

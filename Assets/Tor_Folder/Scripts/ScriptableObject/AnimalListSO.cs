@@ -1,10 +1,10 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//[CreateAssetMenu()]
+[CreateAssetMenu(fileName = "NewAnimalList", menuName = "WHUNWHY/Animal List")]
 public class AnimalListSO : ScriptableObject
 {
-    public List<AnimalSO> animalList;
-    public string AnimalName;
+    public List<AnimalData> animalList;
 }

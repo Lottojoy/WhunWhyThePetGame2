@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Data_Turtle
   m_EditorClassIdentifier: 
   animalID: 4
-  animalName: Tutle
+  animalName: Turtle
   unlockCondition: Must have polishing station
   description: 'It moves very slowly, but the wait in line is incredibly long. The
     focus is on shell polishing.
@@ -21,6 +21,7 @@ MonoBehaviour:
 '
   colorSprite: {fileID: 21300000, guid: dd7d2029d3c855f4992aeb05028d83e7, type: 3}
   silhouetteSprite: {fileID: 21300000, guid: 8d6b900e3e34a474d9f449b8f62ba1ce, type: 3}
+  orderIconSprite: {fileID: 21300000, guid: 006faae720c2bce49ac985cee2a2931b, type: 3}
   modelPrefab: {fileID: 8931525217179229635, guid: dd0b43ff396b0104bb10d5ca8441679f,
     type: 3}
   isUnlocked: 0

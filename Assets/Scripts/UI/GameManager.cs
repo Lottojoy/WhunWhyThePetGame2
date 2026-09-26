@@ -30,10 +30,10 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartCoroutine(ChangeScene("Game"));
-        }
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     StartCoroutine(ChangeScene("Game"));
+        // }
     }
 
     private IEnumerator ChangeScene(string sceneName)

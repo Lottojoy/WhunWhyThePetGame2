@@ -19,6 +19,7 @@ public class GameInputs : MonoBehaviour
             return;
         }
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         playerInputsAction = new PlayerInputsAction();
         playerInputsAction.Player.Enable();

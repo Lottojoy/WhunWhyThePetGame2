@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +19,9 @@ public class MenuManager : MonoBehaviour
     [Header("--------- ChangePageButton ---------")]
     [SerializeField] private Button settingMenuBtn;
     [SerializeField] private Button controlsMenuBtn;
+
+    [Header("--------- PlaySection ---------")]
+    [SerializeField] private Button newGameBtn;
 
     private GameObject currentMenu;
 
@@ -58,6 +62,11 @@ public class MenuManager : MonoBehaviour
             }
             currentMenu = rebindMenu;
             currentMenu.SetActive(true);
+        });
+        newGameBtn.onClick.AddListener(() =>
+        {
+            if (!NetworkManager.Singleton.IsServer) return;
+            NetworkManager.Singleton.SceneManager.LoadScene("Core_GameScene", LoadSceneMode.Single);
         });
     }
 

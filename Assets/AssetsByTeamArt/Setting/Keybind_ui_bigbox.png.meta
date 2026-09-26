@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -95,7 +95,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Keybind_ui_bigbox_0
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 778
+        width: 1617
+        height: 574
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87ccb05f73aac144fa8bb7bf138e47c0
+      internalID: -80012819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keybind_ui_bigbox_4
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 737
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a33dd461e87af849ba45faf5aed0ab6
+      internalID: -1263279670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +148,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Keybind_ui_bigbox_0: -80012819
+      Keybind_ui_bigbox_1: 1138319362
+      Keybind_ui_bigbox_2: 858758409
+      Keybind_ui_bigbox_3: 641015956
+      Keybind_ui_bigbox_4: -1263279670
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

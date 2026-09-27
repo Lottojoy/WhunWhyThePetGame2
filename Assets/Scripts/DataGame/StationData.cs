@@ -29,6 +29,7 @@ public class StationData : ScriptableObject
     [Header("รูปภาพ UI")]
     public Sprite colorSprite;
     public Sprite silhouetteSprite;
+    public Sprite orderIconSprite;
     public GameObject modelPrefab;
 
     [Header("ระบบการเล่น (Gameplay Setup)")]

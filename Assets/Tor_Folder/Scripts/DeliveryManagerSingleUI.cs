@@ -44,6 +44,7 @@ public class DeliveryManagerSingleUI : MonoBehaviour
                 if (iconImage != null)
                 {
                     iconImage.sprite = icon;
+                    iconImage.enabled = true;
                 }
             }
         }
@@ -71,7 +72,7 @@ public class DeliveryManagerSingleUI : MonoBehaviour
         {
             if (station.stationType == type)
             {
-                return station.colorSprite;
+                return station.orderIconSprite;
             }
         }
         return null;

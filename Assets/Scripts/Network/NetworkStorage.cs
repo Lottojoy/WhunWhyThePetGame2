@@ -37,9 +37,12 @@ public class NetworkStorage : NetworkBehaviour
 
     private bool subscribedCallbacks = false;
 
+    public PlayerScoreModule playerScoreModule;
+
     void Start()
     {
-        NetworkStorage.Instance.RegisterModule(new PlayerScoreModule());
+        playerScoreModule = new PlayerScoreModule();
+        NetworkStorage.Instance.RegisterModule(playerScoreModule);
     }
 
 

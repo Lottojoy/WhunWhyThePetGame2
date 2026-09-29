@@ -1,8 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement; // ต้องใช้ตัวนี้เพื่อเปลี่ยนซีน
+using UnityEngine.SceneManagement;
 
-// 1. สร้างคลาสสำหรับเก็บข้อมูลแต่ละช่อง (ต้องมี [System.Serializable] เพื่อให้แปลงเป็น JSON ได้)
+[System.Serializable]
+public class Station
+{
+    public string station_id;
+    public bool unlock = false;
+    public int level;
+}
+
 [System.Serializable]
 public class SlotSaveData
 {
@@ -15,7 +22,14 @@ public class SlotSaveData
 [System.Serializable]
 public class ClinicSaveData
 {
-    public List<SlotSaveData> savedSlots = new List<SlotSaveData>();
+    public string name;
+    public int day;
+    public int money;
+    public int total_earn;
+    public List<Station> stations = new();
+    public List<SlotSaveData> saved_slots = new();
+    public List<int> unlocked_animals = new();
+    public List<int> daliy_earnings = new();
 }
 
 public class ClinicSaveManager : MonoBehaviour
@@ -24,7 +38,21 @@ public class ClinicSaveManager : MonoBehaviour
     [Tooltip("ชื่อซีนถัดไปที่ต้องการให้โหลด (พิมพ์ให้ตรงกับชื่อไฟล์ Scene)")]
     public string nextSceneName = "GameScene";
 
-    // ฟังก์ชันนี้จะเอาไปผูกกับปุ่ม "Play / Next Scene"
+    public void LoadAllMap()
+    {
+        // โค้ดสำหรับใช้อ่านค่าในซีนต่อไป (เขียนไว้ใน Manager ของซีนเกม)
+        string json = PlayerPrefs.GetString("ClinicMapSave", "");
+        if (!string.IsNullOrEmpty(json))
+        {
+            ClinicSaveData data = JsonUtility.FromJson<ClinicSaveData>(json);
+            // foreach (SlotSaveData slotData in data.saved_slots)
+            // {
+            //     // Debug.Log($"ต้องสร้าง {slotData.stationID} ที่ช่อง {slotData.slotIndex} และหมุน {slotData.rotationY} องศา");
+            //     // วางโค้ด Instantiate โมเดลลงตาม Slot Index ที่นี่
+            // }
+        }
+    }
+
     public void SaveAndGoToNextScene()
     {
         if (MapManager.Instance == null)
@@ -48,7 +76,7 @@ public class ClinicSaveManager : MonoBehaviour
                 slotData.stationID = slot.currentStationID;
                 slotData.rotationY = slot.placedModel.transform.eulerAngles.y; // เก็บมุมองศา
 
-                data.savedSlots.Add(slotData);
+                data.saved_slots.Add(slotData);
             }
         }
 

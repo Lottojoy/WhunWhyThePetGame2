@@ -4565,6 +4565,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotList: {fileID: 292845439}
   inputScreenPanel: {fileID: 148440717}
+  submitButton: {fileID: 750922047}
+  inputField: {fileID: 1758364362}
   slotMapId: 0
 --- !u!1 &1433977499
 GameObject:
@@ -5295,7 +5297,7 @@ MonoBehaviour:
   scaleMultiplier: 1.05
   duration: 0.15
   easeType: 6
-  slotId: 0
+  slotId: 1
   targetImage: {fileID: 747287695}
   colorDropFactor: 0.8
 --- !u!1 &1694446408
@@ -5351,7 +5353,7 @@ MonoBehaviour:
   scaleMultiplier: 1.05
   duration: 0.15
   easeType: 6
-  slotId: 0
+  slotId: 2
   targetImage: {fileID: 463838516}
   colorDropFactor: 0.8
 --- !u!1 &1755320066

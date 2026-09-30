@@ -107,7 +107,18 @@ public class ClinicSaveManager : MonoBehaviour
         return listClinicData;
     }
 
-    public void setMap(int mapId, ClinicSaveData data)
+    public ClinicSaveData GetMap(int mapId)
+    {
+        if (listClinicData.list.TryGetValue(mapId, out ClinicSaveData data))
+        {
+            return data;   
+        } else
+        {
+            return null;
+        }
+    }
+
+    public void SetMap(int mapId, ClinicSaveData data)
     {
         listClinicData.list[mapId] = data;
 

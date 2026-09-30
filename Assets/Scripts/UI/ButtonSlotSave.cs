@@ -2,13 +2,16 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
-public class HoverButtonSlotSave : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ButtonSlotSave : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Scale Settings")]
     public float scaleMultiplier = 1.05f;
     public float duration = 0.15f;
     public Ease easeType = Ease.OutQuad;
+    
+    public int slotId = 0;
 
     [Header("Color Settings")]
     [SerializeField] private Image targetImage; // Drag 'BgSlot' Image here
@@ -23,6 +26,7 @@ public class HoverButtonSlotSave : MonoBehaviour, IPointerEnterHandler, IPointer
     private Vector3 originalScale;
     private Vector3 targetScale;
     private RectTransform rectTransform;
+    private ClinicSaveData slotMapData;
 
     private void Awake()
     {
@@ -77,6 +81,29 @@ public class HoverButtonSlotSave : MonoBehaviour, IPointerEnterHandler, IPointer
         {
             targetImage.DOKill();
             targetImage.DOColor(normalColor, duration).SetEase(easeType).SetUpdate(true);
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Detect left clicks
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            Debug.Log("UI Panel clicked!");
+            // OnPanelClicked();
+
+            ClinicSaveData mapData = ClinicSaveManager.Instance.GetMap(slotId);
+
+            if (mapData == null)
+            {
+                SlotMapManager.Instance.inputScreenPanel.SetActive(true);
+                SlotMapManager.Instance.slotMapId = slotId;
+            } else
+            {
+                
+            }
+            
+            
         }
     }
 

@@ -20,8 +20,8 @@ MonoBehaviour:
   description: 'Blow-dry the fur after bathing.
 
 '
-  colorSprite: {fileID: 21300000, guid: c3514d034578f904f8072772d4eeee77, type: 3}
-  silhouetteSprite: {fileID: 21300000, guid: 6dac9a3816aa31d45acfea6d82768b96, type: 3}
+  colorSprite: {fileID: 21300000, guid: e377d03e4e4c1674f85c476d73ead9d5, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: bd6a7f359527509488debc4e00c6744b, type: 3}
   orderIconSprite: {fileID: 21300000, guid: bf6e5148a9d626b4f81a04b6180a3b96, type: 3}
   modelPrefab: {fileID: 8961981021889349617, guid: b4cd46d41d7d6b0409160f85c4871397,
     type: 3}

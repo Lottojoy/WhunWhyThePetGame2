@@ -20,8 +20,8 @@ MonoBehaviour:
   description: 'Perform initial cleaning to remove stains.
 
 '
-  colorSprite: {fileID: 21300000, guid: 7321ac59aa19cf74c84173a6a93ac0fb, type: 3}
-  silhouetteSprite: {fileID: 21300000, guid: c3002b35f97fcbd49bc13486e305a992, type: 3}
+  colorSprite: {fileID: 21300000, guid: 170be266444769e4d85d176d647871c7, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: bd6a7f359527509488debc4e00c6744b, type: 3}
   orderIconSprite: {fileID: 21300000, guid: 00c6de272d90d4540ba816754ca5cb6b, type: 3}
   modelPrefab: {fileID: 4650271106007294426, guid: 1d30d802b2e1df245b2ad090e2c2c99c,
     type: 3}

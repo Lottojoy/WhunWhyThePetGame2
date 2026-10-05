@@ -20,8 +20,8 @@ MonoBehaviour:
   description: 'Treating animals that are critically ill or severely injured.
 
 '
-  colorSprite: {fileID: 21300000, guid: 9c3e0777b4e639f45b167d954ebe21be, type: 3}
-  silhouetteSprite: {fileID: 21300000, guid: 7c9ea1d15f8e1aa4eafd90c53cdd5e6a, type: 3}
+  colorSprite: {fileID: 21300000, guid: 8e695aca2b13c8a4892a8dc714a6d417, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: bd6a7f359527509488debc4e00c6744b, type: 3}
   orderIconSprite: {fileID: 21300000, guid: bf6e5148a9d626b4f81a04b6180a3b96, type: 3}
   modelPrefab: {fileID: 1822074541738089448, guid: 3f06099c766b9b847a28164f51421e41,
     type: 3}

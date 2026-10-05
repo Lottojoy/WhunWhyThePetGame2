@@ -20,8 +20,8 @@ MonoBehaviour:
   description: 'Condition and gloss fur for a beautiful finish.
 
 '
-  colorSprite: {fileID: 21300000, guid: 4b628349fd757fa4d9027159ad6de1e6, type: 3}
-  silhouetteSprite: {fileID: 21300000, guid: c1331a486f72fe044904dada6cf633a6, type: 3}
+  colorSprite: {fileID: 21300000, guid: 450757ead98d2c04da45fc5fd2ae0da0, type: 3}
+  silhouetteSprite: {fileID: 21300000, guid: bd6a7f359527509488debc4e00c6744b, type: 3}
   orderIconSprite: {fileID: 21300000, guid: a8309c97671c1fe42852834252da5a80, type: 3}
   modelPrefab: {fileID: 4687437238889749624, guid: 131b41da3856a464b9a7b8eb9e3ab8a9,
     type: 3}

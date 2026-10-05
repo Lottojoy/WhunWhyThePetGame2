@@ -22,6 +22,8 @@ public class MenuManager : MonoBehaviour
 
     [Header("--------- PlaySection ---------")]
     [SerializeField] private Button newGameBtn;
+    [SerializeField] private Button playBtn;
+
 
     private GameObject currentMenu;
 
@@ -63,10 +65,16 @@ public class MenuManager : MonoBehaviour
             currentMenu = rebindMenu;
             currentMenu.SetActive(true);
         });
-        newGameBtn.onClick.AddListener(() =>
+        // newGameBtn.onClick.AddListener(() =>
+        // {
+        //     if (!NetworkManager.Singleton.IsServer) return;
+        //     NetworkManager.Singleton.SceneManager.LoadScene("Core_GameScene", LoadSceneMode.Single);
+        // });
+        playBtn.onClick.AddListener(() =>
         {
             if (!NetworkManager.Singleton.IsServer) return;
-            NetworkManager.Singleton.SceneManager.LoadScene("Core_GameScene", LoadSceneMode.Single);
+            GameManager.LoadScene("ChooseMapHost");
+            // NetworkManager.Singleton.SceneManager.LoadScene("Core_GameScene", LoadSceneMode.Single);
         });
     }
 

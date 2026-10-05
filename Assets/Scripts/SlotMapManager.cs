@@ -13,7 +13,10 @@ public class SlotMapManager : MonoBehaviour
 
     [SerializeField] public GameObject inputScreenPanel;
     [SerializeField] public Button submitButton;
+    [SerializeField] public Button backButton;
     [SerializeField] public TMP_InputField inputField;
+
+    
     public int slotMapId;
 
     void Start()
@@ -44,7 +47,7 @@ public class SlotMapManager : MonoBehaviour
         ClinicSaveManager.Instance.SetMap(slotMapId, new ClinicSaveData() {name = inputField.text});
         inputField.text = "";
         inputScreenPanel.SetActive(false);
-        SceneManager.LoadScene("Core_GameScene");
+        GameManager.LoadScene("Core_GameScene");
     }
 
     void Awake()
@@ -56,7 +59,8 @@ public class SlotMapManager : MonoBehaviour
         }
         Instance = this;
         submitButton.onClick.AddListener(onSubmit);
+        backButton.onClick.AddListener(() => {
+            GameManager.LoadScene("LobbyScene");
+        });
     }
-
-    // public void 
 }

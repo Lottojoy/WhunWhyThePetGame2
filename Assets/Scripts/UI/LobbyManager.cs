@@ -28,9 +28,25 @@ public class LobbyManager : NetworkBehaviour
         if (networkStorage != null)
         {
             networkStorage.OnPlayerListChanged += OnPlayerListChanged;
-
-            RefreshPlayerListUI();
         }
+
+        // Also refresh in Start after NetworkStorage ready (handles scene re-entry)
+        StartCoroutine(RefreshWhenReady());
+    }
+
+    private System.Collections.IEnumerator RefreshWhenReady()
+    {
+        // Wait until NetworkStorage has entries (or timeout)
+        float timeout = 3f;
+        while (timeout > 0f)
+        {
+            if (networkStorage != null && networkStorage.PlayerEntries.Count > 0)
+                break;
+            timeout -= Time.deltaTime;
+            yield return null;
+        }
+
+        RefreshPlayerListUI();
     }
 
     public override void OnNetworkDespawn()

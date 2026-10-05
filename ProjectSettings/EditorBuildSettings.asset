@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Core_Scenes/Core_Summary.unity
     guid: a81b7c385fcd1a4459c63fe0bfd25966
+  - enabled: 1
+    path: Assets/Scenes/ChooseMapHost.unity
+    guid: 5d1cb290f79b5e245b71d8bd6e0ee4a4
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 0fc01dab664c44989ab4d82d06465277,
       type: 2}

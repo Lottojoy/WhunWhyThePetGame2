@@ -44,25 +44,30 @@ public class AudioManager : MonoBehaviour
     }
 
     /// <summary>
-    /// ฟังก์ชันสแตติกสำหรับเล่นเสียง SFX (เรียกใช้จากสคริปต์ไหนก็ได้)
+    /// ฟังก์ชันเล่นเสียง SFX
     /// </summary>
     public static void PlaySFX(string soundName)
     {
-        // ระบบกันพัง 1: ถ้าไม่มี AudioManager ในฉาก ให้ข้ามไปเลย ไม่ Error
         if (Instance == null || Instance.sfxSource == null) return;
 
-        // ระบบกันพัง 2: ถ้ามีชื่อเสียงนี้ และมีการใส่ AudioClip ไว้ ถึงจะเล่น
+        // 1. เช็คว่ามี "ชื่อเสียง" นี้อยู่ในระบบหรือไม่
         if (Instance.sfxDictionary.TryGetValue(soundName, out Sound s))
         {
+            // 2. เช็คว่าชื่อนี้ มีการลาก "ไฟล์เสียง (Clip)" มาใส่ไว้หรือยัง
             if (s.clip != null)
             {
                 Instance.sfxSource.PlayOneShot(s.clip, s.volume);
             }
+            else
+            {
+                // เตือนกรณีที่ 2: มีชื่อ แต่ลืมใส่ไฟล์เสียง
+                Debug.LogWarning($"[AudioManager] พบชื่อ SFX '{soundName}' แต่คุณลืมลากไฟล์เสียง AudioClip มาใส่!");
+            }
         }
         else
         {
-            // ถ้าพิมพ์ชื่อผิด หรือลืมตั้งค่า จะแค่แจ้งเตือนสีเหลือง (ไม่แดง ไม่ค้าง)
-            Debug.LogWarning($"[AudioManager] ไม่พบเสียง SFX ชื่อ: {soundName}");
+            // เตือนกรณีที่ 1: พิมพ์ชื่อผิด หรือยังไม่ได้สร้างชื่อนี้
+            Debug.LogWarning($"[AudioManager] ไม่พบเสียง SFX ชื่อ: '{soundName}' กรุณาเช็คการสะกดคำใน Inspector");
         }
     }
 
@@ -82,6 +87,14 @@ public class AudioManager : MonoBehaviour
                 Instance.bgmSource.loop = true;
                 Instance.bgmSource.Play();
             }
+            else
+            {
+                Debug.LogWarning($"[AudioManager] พบชื่อ BGM '{soundName}' แต่คุณลืมลากไฟล์เพลง AudioClip มาใส่!");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[AudioManager] ไม่พบเพลง BGM ชื่อ: '{soundName}' กรุณาเช็คการสะกดคำใน Inspector");
         }
     }
 }

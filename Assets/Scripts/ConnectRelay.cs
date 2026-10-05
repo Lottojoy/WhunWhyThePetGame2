@@ -58,7 +58,7 @@ public class ConnectRelay : MonoBehaviour
 
         try
         {
-            int maxConnections = 3; // host + 3 others = 4 players max
+            int maxConnections = 1; // host + 3 others = 4 players max
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 

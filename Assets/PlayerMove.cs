@@ -2,6 +2,7 @@ using System;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMove : NetworkBehaviour
 {
@@ -46,10 +47,39 @@ public class PlayerMove : NetworkBehaviour
             {
                 Debug.LogError("GameInputs not found in scene!");
             }
+
+            // Snap to lobby stand position
+            if (SceneManager.GetActiveScene().name == "LobbyScene")
+                SnapToLobbyPosition();
         }
         else
         {
             enabled = false; // ปิด Update สำหรับ non-owner
+        }
+    }
+
+    private void SnapToLobbyPosition()
+    {
+        GameObject standObj = GameObject.Find("Stand_Place");
+        if (standObj == null)
+        {
+            Debug.LogWarning("Stand_Place not found in scene!");
+            return;
+        }
+
+        Transform standPlace = standObj.transform;
+        bool isHost = OwnerClientId == NetworkManager.ServerClientId;
+        string slotName = isHost ? "Player1" : "Player2";
+        Transform slot = standPlace.Find(slotName);
+
+        if (slot != null)
+        {
+            transform.SetPositionAndRotation(slot.position, slot.rotation);
+            Debug.Log($"Player {OwnerClientId} snapped to {slotName}");
+        }
+        else
+        {
+            Debug.LogWarning($"Slot {slotName} not found under Stand_Place!");
         }
     }
 
@@ -62,6 +92,9 @@ public class PlayerMove : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner || gameInputs == null) return;
+
+        // Disable movement in lobby (waiting) scene
+        if (SceneManager.GetActiveScene().name == "LobbyScene") return;
 
         HandleMovement();
         HandleInteractions();

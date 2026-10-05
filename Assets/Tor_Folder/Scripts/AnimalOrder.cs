@@ -11,9 +11,10 @@ public class AnimalOrder
 
     public bool IsStationRequired(StationType type) => requiredStations.Contains(type);
     public bool IsStationCompleted(StationType type) => completedStations.Contains(type);
+
     public bool IsFullyComplete()
     {
-        foreach (var s in requiredStations)
+        foreach (StationType s in requiredStations)
         {
             if (!completedStations.Contains(s)) return false;
         }

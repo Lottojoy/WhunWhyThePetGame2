@@ -7,10 +7,21 @@ public class KitchenObject : MonoBehaviour
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
 
     private IKitchenObjectParent kitchenObjectParent;
+    private AnimalOrder animalOrder; // <-- เพิ่มใหม่
 
     public KitchenObjectSO GetKitchenObjectSO()
     {
         return kitchenObjectSO;
+    }
+
+    public void SetAnimalOrder(AnimalOrder order)
+    {
+        animalOrder = order;
+    }
+
+    public AnimalOrder GetAnimalOrder()
+    {
+        return animalOrder;
     }
 
     public void SetKitchenObjectParent(IKitchenObjectParent kitchenObjectParent)

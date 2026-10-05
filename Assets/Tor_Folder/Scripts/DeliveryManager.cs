@@ -84,4 +84,19 @@ public class DeliveryManager : MonoBehaviour
     {
         return waitingOrderList;
     }
+
+    public void CompleteOrder(AnimalOrder order)
+    {
+        if (waitingOrderList.Remove(order))
+        {
+            int reward = order.animalData.GetRewardMoney(currentDifficulty);
+
+            if (MoneyManager.Instance != null)
+            {
+                MoneyManager.Instance.AddMoney(reward);
+            }
+
+            OnAnimalSpawned?.Invoke(this, EventArgs.Empty); // ÃÕà¿Ãª UI ¤ÔÇ
+        }
+    }
 }

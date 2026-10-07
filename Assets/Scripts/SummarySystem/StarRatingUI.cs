@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections; // จำเป็นต้องมีสำหรับ IEnumerator
 
 public class StarRatingUI : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class StarRatingUI : MonoBehaviour
     [Header("Texture ของแต่ละสถานะ")]
     public Texture fullStarTexture;
     public Texture halfStarTexture;
-    // ลบ emptyStarTexture ออกเนื่องจากไม่ได้ใช้งานแล้ว
+
+    public string StarSoundSfxName = "StarSound";
 
     private void Awake()
     {
@@ -20,15 +22,15 @@ public class StarRatingUI : MonoBehaviour
     {
         if (starSlots == null) return;
 
+        // ในส่วนนี้เราจะแค่เตรียม Component CuteUIAnimator ให้ดาวทุกดวงพร้อมใช้งาน
+        // แต่ยัง "ไม่สั่งเล่นอนิเมชันหรือเสียง" ในตอนนี้นะครับ
         for (int i = 0; i < starSlots.Length; i++)
         {
             if (starSlots[i] == null) continue;
 
             CuteUIAnimator anim = starSlots[i].GetComponent<CuteUIAnimator>();
             if (anim == null)
-                anim = starSlots[i].gameObject.AddComponent<CuteUIAnimator>();
-
-            anim.PopIn(i * 0.15f);
+                starSlots[i].gameObject.AddComponent<CuteUIAnimator>();
         }
     }
 
@@ -44,22 +46,45 @@ public class StarRatingUI : MonoBehaviour
             if (starSlots[i] == null) continue;
 
             float diff = rating - i;
+            float delay = i * 0.15f; // สร้างตัวแปร delay คำนวณเวลาหน่วงตามลำดับดาว
 
             if (diff >= 1f)
             {
+                // กรณีดาวเต็มดวง
                 starSlots[i].gameObject.SetActive(true);
                 starSlots[i].texture = fullStarTexture;
+
+                // สั่งเด้งและเล่นเสียง
+                starSlots[i].GetComponent<CuteUIAnimator>().PopIn(delay);
+                StartCoroutine(PlaySoundDelayed(StarSoundSfxName, delay));
             }
             else if (diff >= 0.5f)
             {
+                // กรณีดาวครึ่งดวง
                 starSlots[i].gameObject.SetActive(true);
                 starSlots[i].texture = halfStarTexture;
+
+                // สั่งเด้งและเล่นเสียง
+                starSlots[i].GetComponent<CuteUIAnimator>().PopIn(delay);
+                StartCoroutine(PlaySoundDelayed(StarSoundSfxName, delay));
             }
             else
             {
-                // ซ่อนดาวดวงที่เป็นดาวว่าง (ไม่แสดงผล)
+                // กรณีดาวว่าง ให้ซ่อนไว้ -> ไม่ต้องเด้งและไม่ต้องมีเสียง
                 starSlots[i].gameObject.SetActive(false);
             }
         }
+    }
+
+    private IEnumerator PlaySoundDelayed(string soundName, float delayTime)
+    {
+        // 1. รอเวลาตามค่า delay ก่อน
+        if (delayTime > 0f)
+        {
+            yield return new WaitForSeconds(delayTime);
+        }
+
+        // 2. เมื่อรอครบเวลาแล้ว ค่อยสั่งเล่นเสียง (ให้อยู่นอกปีกกา if)
+        AudioManager.PlaySFX(soundName);
     }
 }

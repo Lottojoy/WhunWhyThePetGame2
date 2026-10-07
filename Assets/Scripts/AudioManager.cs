@@ -57,6 +57,9 @@ public class AudioManager : MonoBehaviour
             if (s.clip != null)
             {
                 Instance.sfxSource.PlayOneShot(s.clip, s.volume);
+
+                // ---- [เพิ่ม Debug แจ้งเตือนว่ากำลังเล่นเสียง SFX] ----
+                Debug.Log($"[AudioManager] 🔊 กำลังเล่นเสียง SFX: {soundName}");
             }
             else
             {
@@ -86,6 +89,9 @@ public class AudioManager : MonoBehaviour
                 Instance.bgmSource.volume = s.volume;
                 Instance.bgmSource.loop = true;
                 Instance.bgmSource.Play();
+
+                // ---- [เพิ่ม Debug แจ้งเตือนว่ากำลังเล่นเพลง BGM] ----
+                Debug.Log($"[AudioManager] 🎵 กำลังเล่นเพลง BGM: {soundName}");
             }
             else
             {
